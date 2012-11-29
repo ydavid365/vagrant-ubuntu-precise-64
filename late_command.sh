@@ -13,8 +13,17 @@ chown -R vagrant:vagrant /home/vagrant/.ssh
 # speed up ssh
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
-# get chef
-gem install chef --no-rdoc --no-ri
+# get salt
+echo deb http://ppa.launchpad.net/saltstack/salt/ubuntu `lsb_release -sc` main | sudo tee /etc/apt/sources.list.d/saltstack.list
+wget -q -O- "http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x4759FA960E27C0A6" | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install salt-minion
+
+SALT_MINION='/etc/salt/minion'
+cat > $SALT_MINION << EOF
+master: 127.0.0.1
+#id: salt.ubuntu1204
+EOF
 
 # display login promt after boot
 sed "s/quiet splash//" /etc/default/grub > /tmp/grub
